@@ -16,6 +16,7 @@ const tourRouter = require('./routers/tourRouter');
 const userRouter = require('./routers/userRouter');
 const reviewRouter = require('./routers/reviewRouter');
 const bookingRouter = require('./routers/bookingRouter');
+const bookingController = require('./controllers/bookingController');
 const mongoSanitize = require('./utils/mongoSan');
 const { title } = require('process');
 const cookieParser = require('cookie-parser');
@@ -29,6 +30,12 @@ app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout,
+);
+
 //limit number of requests of an ip for a specific amount of time
 const limiter = rateLimit({
   max: 100,
