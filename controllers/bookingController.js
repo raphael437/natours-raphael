@@ -12,16 +12,24 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   //2- create the checkout session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
+    mode: 'payment',
     success_url: `${req.protocol}://${req.get('host')}/success`,
     cancel_url: `${req.protocol}://${req.get('host')}/cancel`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
     line_items: [
       {
-        name: `${tour.name} Tour`,
-        description: tour.summary,
-        amount: tour.price * 100,
-        currency: 'usd',
+        price_data: {
+          currency: 'usd',
+          unit_amount: tour.price * 100, // price in cents
+          product_data: {
+            name: `${tour.name} Tour`,
+            description: tour.summary,
+            images: [
+              `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`,
+            ],
+          },
+        },
         quantity: 1,
       },
     ],
