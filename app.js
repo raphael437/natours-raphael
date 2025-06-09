@@ -21,7 +21,12 @@ const mongoSanitize = require('./utils/mongoSan');
 const { title } = require('process');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
+
 //global middleware
+// implement cors
+app.use(cors());
+app.options('*', cors());
 //serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
